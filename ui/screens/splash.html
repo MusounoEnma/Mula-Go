@@ -1,0 +1,67 @@
+<!-- screens/splash.html — MULA GO Splash Screen -->
+<div class="w-full h-full animated-bg flex flex-col items-center justify-center" style="animation: fadeIn 0.8s ease forwards;">
+
+  <!-- Concentric animated rings -->
+  <div class="relative flex items-center justify-center mb-10">
+    <div class="absolute w-40 h-40 splash-ring"></div>
+    <div class="absolute w-56 h-56 splash-ring splash-ring-2" style="opacity:0.5;"></div>
+    <div class="absolute w-72 h-72 rounded-full border border-sky-200" style="animation: pulseRing 2.5s ease-in-out infinite;"></div>
+
+    <!-- Logo mark -->
+    <div class="w-28 h-28 rounded-2xl glass-card flex items-center justify-center shadow-2xl"
+         style="animation: fadeIn 0.6s ease 0.4s both; box-shadow: 0 0 60px rgba(14,165,233,0.3);">
+      <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGrad" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#0ea5e9"/>
+            <stop offset="100%" stop-color="#0369a1"/>
+          </linearGradient>
+        </defs>
+        <!-- Stylized "M" + arrow up = growth/rocket motif -->
+        <path d="M10 46 L10 18 L30 34 L50 18 L50 46" stroke="url(#logoGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M30 8 L36 22 L30 18 L24 22 Z" fill="url(#logoGrad)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Brand name -->
+  <div style="animation: slideUp 0.6s ease 0.5s both; opacity:0;">
+    <h1 class="font-heading text-5xl font-extrabold gradient-text tracking-widest mb-2">
+      MULA GO
+    </h1>
+    <p class="text-center text-sky-500 font-body font-light tracking-[0.25em] text-sm uppercase">
+      Global Seller Automation Suite
+    </p>
+  </div>
+
+  <!-- Loading dots -->
+  <div class="flex gap-2 mt-12" style="animation: fadeIn 0.6s ease 1.2s both; opacity:0;">
+    <div class="w-2 h-2 rounded-full bg-sky-400" style="animation: bounce 1.2s ease infinite 0s;"></div>
+    <div class="w-2 h-2 rounded-full bg-sky-500" style="animation: bounce 1.2s ease infinite 0.2s;"></div>
+    <div class="w-2 h-2 rounded-full bg-sky-600" style="animation: bounce 1.2s ease infinite 0.4s;"></div>
+  </div>
+
+  <p class="mt-5 text-sky-400 font-body text-xs tracking-widest uppercase"
+     style="animation: fadeIn 0.6s ease 1.4s both; opacity:0;">
+    Initializing...
+  </p>
+</div>
+
+<style>
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes pulseRing {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50%      { opacity: 0.5;  transform: scale(1.06); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+</style>

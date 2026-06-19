@@ -1,0 +1,585 @@
+<!-- screens/seller.html — Seller Mode: Social & Market Hub -->
+<div class="w-full h-full animated-bg flex flex-col overflow-y-auto">
+
+  <!-- Top Nav -->
+  <nav class="flex items-center justify-between px-10 py-4 glass-card border-b border-sky-100 shadow-sm">
+    <div class="flex items-center gap-3">
+      <button onclick="transitionTo('dashboard')" id="back-btn"
+              class="w-9 h-9 rounded-xl hover:bg-sky-100 flex items-center justify-center transition-colors"
+              title="Back to Dashboard">
+        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div class="w-px h-6 bg-sky-100"></div>
+      <span class="font-heading text-xl font-bold gradient-text tracking-wider">MULA GO</span>
+      <span class="text-slate-300 font-light text-lg">/</span>
+      <span class="font-heading text-base font-semibold text-sky-500">Seller Mode</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <div id="workflow-nav-btn" class="hidden">
+        <button onclick="transitionTo('workflow')" class="btn-primary text-sm py-2 px-4 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Launch Workflow
+        </button>
+      </div>
+      <div class="flex items-center gap-1.5 bg-sky-100 text-sky-700 text-xs font-heading font-semibold
+                  rounded-full px-3 py-1 tracking-wider uppercase">
+        <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
+        Seller Mode Active
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="flex-1 px-10 py-8" style="animation: slideUp 0.5s ease 0.1s both; opacity:0;">
+
+    <!-- Section Header -->
+    <div class="mb-8">
+      <h1 class="font-heading text-3xl font-extrabold gradient-text mb-2">Connect Your World</h1>
+      <p class="font-body text-slate-400 text-sm max-w-xl leading-relaxed">
+        Link your social media and marketplace accounts. MULA GO will automate posting,
+        listing, and distribution across all connected platforms simultaneously.
+      </p>
+    </div>
+
+    <!-- Social Media Section -->
+    <div class="mb-8">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </div>
+        <h2 class="font-heading text-base font-bold text-sky-700 uppercase tracking-widest">Social Media</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <!-- TikTok -->
+        <div class="platform-card" id="card-tiktok">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow"
+                   style="background: linear-gradient(135deg,#010101,#69C9D0);">
+                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.78 1.53V6.75a4.85 4.85 0 01-1.01-.06z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-heading font-bold text-slate-700 text-sm">TikTok</div>
+                <div class="text-xs text-slate-400 font-body">Short video platform</div>
+              </div>
+            </div>
+            <div id="badge-tiktok" class="hidden text-xs font-semibold font-heading text-green-600 bg-green-100 rounded-full px-2 py-0.5">✓ Connected</div>
+          </div>
+          <button id="btn-tiktok" class="btn-primary w-full text-sm py-2.5"
+                  onclick="handleConnect('tiktok')">
+            Connect TikTok
+          </button>
+        </div>
+
+        <!-- Instagram -->
+        <div class="platform-card" id="card-instagram">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow"
+                   style="background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-heading font-bold text-slate-700 text-sm">Instagram</div>
+                <div class="text-xs text-slate-400 font-body">Photo & Reels platform</div>
+              </div>
+            </div>
+            <div id="badge-instagram" class="hidden text-xs font-semibold font-heading text-green-600 bg-green-100 rounded-full px-2 py-0.5">✓ Connected</div>
+          </div>
+          <button id="btn-instagram" class="btn-primary w-full text-sm py-2.5"
+                  onclick="handleConnect('instagram')">
+            Connect Instagram
+          </button>
+        </div>
+
+        <!-- X (Twitter) -->
+        <div class="platform-card" id="card-twitter">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-black flex items-center justify-center shadow">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.402 6.231H2.744l7.738-8.835L1.254 2.25H8.08l4.254 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-heading font-bold text-slate-700 text-sm">X (Twitter)</div>
+                <div class="text-xs text-slate-400 font-body">Micro-blog & community</div>
+              </div>
+            </div>
+            <div id="badge-twitter" class="hidden text-xs font-semibold font-heading text-green-600 bg-green-100 rounded-full px-2 py-0.5">✓ Connected</div>
+          </div>
+          <button id="btn-twitter" class="btn-primary w-full text-sm py-2.5"
+                  onclick="handleConnect('twitter')">
+            Connect X
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Marketplaces Section -->
+    <div class="mb-8">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+        </div>
+        <h2 class="font-heading text-base font-bold text-sky-700 uppercase tracking-widest">Marketplaces</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <!-- eBay -->
+        <div class="platform-card" id="card-ebay">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow">
+                <span class="font-heading font-extrabold text-base" style="background: linear-gradient(90deg,#e53238,#0064d2,#f5af02,#86b817); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">eBay</span>
+              </div>
+              <div>
+                <div class="font-heading font-bold text-slate-700 text-sm">eBay</div>
+                <div class="text-xs text-slate-400 font-body">Global auction marketplace</div>
+              </div>
+            </div>
+            <div id="badge-ebay" class="hidden text-xs font-semibold font-heading text-green-600 bg-green-100 rounded-full px-2 py-0.5">✓ Connected</div>
+          </div>
+          <button id="btn-ebay" class="btn-primary w-full text-sm py-2.5"
+                  onclick="handleConnect('ebay')">
+            Connect eBay
+          </button>
+        </div>
+
+        <!-- Amazon -->
+        <div class="platform-card" id="card-amazon">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-amber-400 flex items-center justify-center shadow">
+                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13.958 10.09c0 1.232.029 2.256-.591 3.351-.502.891-1.301 1.438-2.186 1.438-1.214 0-1.922-.924-1.922-2.292 0-2.692 2.415-3.182 4.699-3.182v.685zm3.186 7.705c-.209.189-.512.201-.745.074-1.047-.872-1.234-1.276-1.814-2.106-1.734 1.767-2.962 2.297-5.209 2.297-2.66 0-4.731-1.641-4.731-4.925 0-2.565 1.391-4.309 3.37-5.164 1.715-.754 4.11-.891 5.942-1.095v-.41c0-.753.06-1.642-.384-2.294-.385-.579-1.124-.82-1.775-.82-1.205 0-2.277.618-2.54 1.897-.054.285-.261.567-.547.582l-3.065-.333c-.259-.056-.546-.266-.472-.66.704-3.716 4.06-4.838 7.066-4.838 1.537 0 3.547.41 4.758 1.574 1.538 1.436 1.392 3.352 1.392 5.438v4.923c0 1.481.616 2.13 1.192 2.929.204.285.249.628-.012.839-.647.541-1.794 1.537-2.425 2.097l-.001-.006zm3.967 1.597c-2.609 1.927-6.389 2.955-9.647 2.955-4.564 0-8.674-1.688-11.784-4.496-.244-.221-.027-.521.266-.349 3.354 1.951 7.496 3.129 11.784 3.129 2.885 0 6.058-.6 8.977-1.843.44-.189.807.29.404.604zm1.126-1.293c-.333-.428-2.203-.202-3.042-.102-.255.032-.295-.192-.064-.354 1.49-1.048 3.932-.745 4.217-.394.285.353-.075 2.8-1.473 3.969-.215.18-.421.085-.325-.153.314-.788 1.021-2.539.687-2.966z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-heading font-bold text-slate-700 text-sm">Amazon</div>
+                <div class="text-xs text-slate-400 font-body">World's largest store</div>
+              </div>
+            </div>
+            <div id="badge-amazon" class="hidden text-xs font-semibold font-heading text-green-600 bg-green-100 rounded-full px-2 py-0.5">✓ Connected</div>
+          </div>
+          <button id="btn-amazon" class="btn-primary w-full text-sm py-2.5"
+                  onclick="handleConnect('amazon')">
+            Connect Amazon
+          </button>
+        </div>
+
+        <!-- Alibaba -->
+        <div class="platform-card" id="card-alibaba">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow"
+                   style="background:#FF6A00;">
+                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm-.48 17.28c-2.88 0-4.56-1.44-4.56-3.84 0-1.44.72-2.64 2.16-3.36-.48-.72-.72-1.44-.72-2.16 0-1.68 1.2-2.88 3.12-2.88 1.68 0 2.88.96 2.88 2.4 0 1.2-.72 2.16-2.4 2.88l1.92 2.4c.24-.48.48-1.2.48-1.92h1.68c0 1.2-.36 2.16-.96 3.12l1.68 2.16h-2.16l-.72-.96c-.72.48-1.68.72-2.4.72zm.24-9.6c-.72 0-1.2.48-1.2 1.2 0 .48.24.96.48 1.44.96-.48 1.44-1.2 1.44-1.68 0-.6-.36-.96-.72-.96zm-.24 8.16c.6 0 1.2-.24 1.68-.48l-2.4-3.12c-.72.48-1.2 1.2-1.2 1.92 0 1.08.84 1.68 1.92 1.68z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-heading font-bold text-slate-700 text-sm">Alibaba</div>
+                <div class="text-xs text-slate-400 font-body">B2B global trade</div>
+              </div>
+            </div>
+            <div id="badge-alibaba" class="hidden text-xs font-semibold font-heading text-green-600 bg-green-100 rounded-full px-2 py-0.5">✓ Connected</div>
+          </div>
+          <button id="btn-alibaba" class="btn-primary w-full text-sm py-2.5"
+                  onclick="handleConnect('alibaba')">
+            Connect Alibaba
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Workflow Launch Footer ────────────────────────────────────────────── -->
+  <div id="workflow-footer" class="hidden fixed bottom-0 left-0 right-0 z-40"
+       style="animation: slideUp 0.4s ease both;">
+    <div class="glass-card border-t border-sky-200 shadow-2xl px-10 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <div>
+          <div class="font-heading font-bold text-slate-700 text-sm" id="footer-count-text">1 account connected</div>
+          <div class="font-body text-slate-400 text-xs">You're ready to start the workflow</div>
+        </div>
+      </div>
+      <button onclick="transitionTo('workflow')" class="btn-primary flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Launch Workflow
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Connect Modal -->
+  <div id="connect-modal" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="glass-card rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl" id="modal-container">
+      <div id="modal-dynamic-content">
+        <!-- Dynamic content will be injected here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Social platforms use real Playwright login or Official APIs; marketplaces use placeholder
+const _SOCIAL_PLATFORMS   = ['tiktok', 'instagram', 'twitter'];
+const _MARKET_PLATFORMS   = ['ebay', 'amazon', 'alibaba'];
+const _connectionState    = {};
+
+// Helper for dynamic HTML injection
+function _setModalHtml(html) {
+  document.getElementById('modal-dynamic-content').innerHTML = html;
+}
+
+// ── Connection count & workflow footer ───────────────────────────────────────
+function _updateWorkflowFooter() {
+  const count = _SOCIAL_PLATFORMS.filter(p => _connectionState[p]).length;
+  const footer = document.getElementById('workflow-footer');
+  const navBtn = document.getElementById('workflow-nav-btn');
+  if (count > 0) {
+    footer.classList.remove('hidden');
+    navBtn.classList.remove('hidden');
+    const label = count === 1 ? '1 social account connected' : `${count} social accounts connected`;
+    document.getElementById('footer-count-text').textContent = label;
+  } else {
+    footer.classList.add('hidden');
+    navBtn.classList.add('hidden');
+  }
+}
+
+// ── Main connect handler ──────────────────────────────────────────────────────
+async function handleConnect(platform) {
+  if (_connectionState[platform]) {
+    if (!confirm(`Disconnect from ${cap(platform)}?`)) return;
+    await doDisconnect(platform);
+    return;
+  }
+
+  const isSocial = _SOCIAL_PLATFORMS.includes(platform);
+  if (isSocial) {
+    showConnectionMethodSelection(platform);
+  } else {
+    // Marketplace placeholder flow directly
+    showLoadingScreen(platform);
+    try {
+      const result = await window.pywebview.api.connect_account(platform);
+      if (result && result.success) {
+        markConnected(platform);
+        showModalSuccess(platform, result.message);
+      } else {
+        showModalError(result ? result.message : 'Connection failed.');
+      }
+    } catch(e) {
+      markConnected(platform);
+      showModalSuccess(platform, `${cap(platform)} linked (preview mode).`);
+    }
+  }
+}
+
+function showConnectionMethodSelection(platform) {
+  const container = document.getElementById('modal-container');
+  container.className = "glass-card rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl text-center";
+  
+  const html = `
+    <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+      </svg>
+    </div>
+    <h2 class="font-heading text-xl font-bold text-sky-700 mb-2">Connect to ${cap(platform)}</h2>
+    <p class="font-body text-slate-500 text-xs mb-6">Choose how MULA GO should distribute posts to your account.</p>
+    
+    <div class="flex flex-col gap-3.5 mb-6 text-left">
+      <!-- Option A: Playwright -->
+      <button onclick="startBrowserLogin('${platform}')" class="w-full p-4 rounded-xl border border-slate-100 hover:border-sky-300 hover:bg-sky-50/30 text-left transition-all group">
+        <div class="font-heading font-semibold text-slate-700 text-sm mb-1 group-hover:text-sky-600">Browser Auto-Login</div>
+        <div class="font-body text-slate-400 text-xs leading-relaxed">Opens a browser for you to log in. Fast setup, but automation is prone to maintenance breaks.</div>
+      </button>
+      
+      <!-- Option B: Official API Keys -->
+      <button onclick="showAPIKeyForm('${platform}')" class="w-full p-4 rounded-xl border border-slate-100 hover:border-sky-300 hover:bg-sky-50/30 text-left transition-all group">
+        <div class="font-heading font-semibold text-slate-700 text-sm mb-1 group-hover:text-sky-600">Official API Keys (Stable)</div>
+        <div class="font-body text-slate-400 text-xs leading-relaxed">Uses official API endpoints with your credentials. Maximum stability for scheduled publishing.</div>
+      </button>
+    </div>
+    
+    <button class="w-full py-2.5 bg-slate-100 text-slate-600 font-heading font-semibold rounded-xl text-sm hover:bg-slate-200 transition-colors" onclick="closeConnectModal()">Cancel</button>
+  `;
+  
+  _setModalHtml(html);
+  document.getElementById('connect-modal').classList.remove('hidden');
+}
+
+function showAPIKeyForm(platform) {
+  const container = document.getElementById('modal-container');
+  container.className = "glass-card rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl text-left";
+  
+  let formHtml = '';
+  if (platform === 'tiktok') {
+    formHtml = `
+      <div class="mb-4">
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Access Token</label>
+        <input type="password" id="api-access-token" placeholder="Enter your TikTok Access Token" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all">
+      </div>
+    `;
+  } else if (platform === 'instagram') {
+    formHtml = `
+      <div class="mb-4">
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Instagram Business Account ID</label>
+        <input type="text" id="api-ig-account-id" placeholder="Enter Instagram Account ID" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all mb-4">
+        
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Graph Access Token</label>
+        <input type="password" id="api-access-token" placeholder="Enter Graph Access Token" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all">
+      </div>
+    `;
+  } else if (platform === 'twitter') {
+    formHtml = `
+      <div class="mb-4">
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Consumer Key (API Key)</label>
+        <input type="text" id="api-consumer-key" placeholder="Consumer Key" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all mb-3">
+        
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Consumer Secret (API Key Secret)</label>
+        <input type="password" id="api-consumer-secret" placeholder="Consumer Secret" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all mb-3">
+        
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Access Token</label>
+        <input type="text" id="api-access-token" placeholder="Access Token" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all mb-3">
+        
+        <label class="block font-heading text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Access Token Secret</label>
+        <input type="password" id="api-access-token-secret" placeholder="Access Token Secret" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent font-body text-sm transition-all">
+      </div>
+    `;
+  }
+  
+  const html = `
+    <h2 class="font-heading text-xl font-bold text-sky-700 mb-2">API Credentials</h2>
+    <p class="font-body text-slate-400 text-xs mb-5 leading-relaxed">Enter your developer API credentials for ${cap(platform)}. All values are encrypted and stored locally on your device.</p>
+    
+    <form onsubmit="event.preventDefault(); submitAPICredentials('${platform}');" class="mb-4">
+      ${formHtml}
+      
+      <div class="flex gap-3 mt-6">
+        <button type="button" onclick="showConnectionMethodSelection('${platform}')" class="flex-1 py-2.5 bg-slate-100 text-slate-600 font-heading font-semibold rounded-xl text-sm hover:bg-slate-200 transition-colors">Back</button>
+        <button type="submit" class="flex-1 py-2.5 btn-primary font-heading font-semibold rounded-xl text-sm shadow-md hover:shadow-sky-100 transition-all">Save Keys</button>
+      </div>
+    </form>
+  `;
+  
+  _setModalHtml(html);
+}
+
+async function submitAPICredentials(platform) {
+  const credentials = {};
+  
+  if (platform === 'tiktok') {
+    const token = document.getElementById('api-access-token').value.trim();
+    if (!token) { alert('Access Token is required.'); return; }
+    credentials.access_token = token;
+  } else if (platform === 'instagram') {
+    const id = document.getElementById('api-ig-account-id').value.trim();
+    const token = document.getElementById('api-access-token').value.trim();
+    if (!id || !token) { alert('Both Account ID and Access Token are required.'); return; }
+    credentials.instagram_account_id = id;
+    credentials.access_token = token;
+  } else if (platform === 'twitter') {
+    const k = document.getElementById('api-consumer-key').value.trim();
+    const s = document.getElementById('api-consumer-secret').value.trim();
+    const t = document.getElementById('api-access-token').value.trim();
+    const ts = document.getElementById('api-access-token-secret').value.trim();
+    if (!k || !s || !t || !ts) { alert('All X API keys and secrets are required.'); return; }
+    credentials.consumer_key = k;
+    credentials.consumer_secret = s;
+    credentials.access_token = t;
+    credentials.access_token_secret = ts;
+  }
+  
+  showLoadingScreen(platform);
+  
+  try {
+    const result = await window.pywebview.api.save_api_credentials(platform, credentials);
+    if (result && result.success) {
+      markConnected(platform);
+      showModalSuccess(platform, result.message);
+    } else {
+      showModalError(result ? result.message : 'Failed to save API credentials.');
+    }
+  } catch(e) {
+    markConnected(platform);
+    showModalSuccess(platform, `${cap(platform)} API Key saved (preview mode).`);
+  }
+}
+
+async function startBrowserLogin(platform) {
+  showLoadingScreen(platform);
+  try {
+    const result = await window.pywebview.api.connect_social_account(platform);
+    if (result && result.success) {
+      markConnected(platform);
+      showModalSuccess(platform, result.message);
+    } else {
+      showModalError(result ? result.message : 'Connection failed.');
+    }
+  } catch(e) {
+    markConnected(platform);
+    showModalSuccess(platform, `${cap(platform)} linked (preview mode).`);
+  }
+}
+
+async function doDisconnect(platform) {
+  try { await window.pywebview.api.disconnect_account(platform); } catch(e) {}
+  _connectionState[platform] = false;
+  const card  = document.getElementById(`card-${platform}`);
+  const btn   = document.getElementById(`btn-${platform}`);
+  const badge = document.getElementById(`badge-${platform}`);
+  if (card)  card.classList.remove('connected');
+  if (badge) badge.classList.add('hidden');
+  if (btn)  { btn.textContent = `Connect ${cap(platform)}`; btn.style.background = ''; btn.style.boxShadow = ''; }
+  _updateWorkflowFooter();
+}
+
+function markConnected(platform) {
+  _connectionState[platform] = true;
+  const card  = document.getElementById(`card-${platform}`);
+  const btn   = document.getElementById(`btn-${platform}`);
+  const badge = document.getElementById(`badge-${platform}`);
+  if (card)  card.classList.add('connected');
+  if (badge) badge.classList.remove('hidden');
+  if (btn)  { btn.textContent = 'Disconnect'; btn.style.background = 'linear-gradient(135deg,#6b7280,#4b5563)'; btn.style.boxShadow = 'none'; }
+  _updateWorkflowFooter();
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────────
+const _spinnerHTML = `<svg class="w-8 h-8 animate-spin text-sky-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>`;
+const _checkHTML   = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>`;
+
+function showLoadingScreen(platform) {
+  const container = document.getElementById('modal-container');
+  container.className = "glass-card rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl text-center";
+  
+  const platformIcons = {
+    instagram: '📸',
+    tiktok: '🎵',
+    twitter: '🐦',
+  };
+  const icon = platformIcons[platform] || '🔗';
+
+  const html = `
+    <div class="w-16 h-16 rounded-2xl bg-sky-50 mx-auto mb-4 flex items-center justify-center text-3xl">
+      ${icon}
+    </div>
+    <h2 class="font-heading text-xl font-bold text-sky-700 mb-2">Connecting to ${cap(platform)}…</h2>
+    <div class="font-body text-slate-500 text-sm mb-5 space-y-2">
+      <p class="font-semibold text-sky-600">👉 Please complete login in your Chrome browser</p>
+      <p class="text-slate-400">A Chrome tab will open. Log in to ${cap(platform)} there.</p>
+      <p class="text-slate-400">This dialog will update automatically once detected.</p>
+    </div>
+    <div class="flex items-center justify-center gap-2 text-xs text-slate-400">
+      ${_spinnerHTML}
+      <span id="connect-wait-label">Waiting for login…</span>
+    </div>
+  `;
+  _setModalHtml(html);
+  document.getElementById('connect-modal').classList.remove('hidden');
+
+  // Animate the wait label
+  const labels = ['Waiting for login…', 'Detecting session…', 'Checking authentication…', 'Waiting for login…'];
+  let _li = 0;
+  window._connectLabelInterval = setInterval(() => {
+    _li = (_li + 1) % labels.length;
+    const el = document.getElementById('connect-wait-label');
+    if (el) el.textContent = labels[_li];
+  }, 2500);
+}
+
+function _stopConnectAnimation() {
+  if (window._connectLabelInterval) {
+    clearInterval(window._connectLabelInterval);
+    window._connectLabelInterval = null;
+  }
+}
+
+function showModalSuccess(platform, msg) {
+  _stopConnectAnimation();
+  const container = document.getElementById('modal-container');
+  container.className = "glass-card rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl text-center";
+  
+  const html = `
+    <div class="w-16 h-16 rounded-2xl bg-green-100 mx-auto mb-4 flex items-center justify-center">
+      ${_checkHTML}
+    </div>
+    <h2 class="font-heading text-xl font-bold text-sky-700 mb-2">✓ ${cap(platform)} Connected!</h2>
+    <p class="font-body text-slate-500 text-sm mb-6">
+      ${msg}
+    </p>
+    <button class="btn-primary w-full" onclick="closeConnectModal()">Done</button>
+  `;
+  _setModalHtml(html);
+}
+
+function showModalError(msg) {
+  _stopConnectAnimation();
+  const container = document.getElementById('modal-container');
+  container.className = "glass-card rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl text-center";
+  
+  const errHTML = `<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>`;
+  
+  const html = `
+    <div class="w-16 h-16 rounded-2xl bg-red-100 mx-auto mb-4 flex items-center justify-center">
+      ${errHTML}
+    </div>
+    <h2 class="font-heading text-xl font-bold text-sky-700 mb-2">Connection Failed</h2>
+    <p class="font-body text-slate-500 text-sm mb-6">
+      ${msg}
+    </p>
+    <button class="btn-primary w-full" onclick="closeConnectModal()">Close</button>
+  `;
+  _setModalHtml(html);
+}
+
+function closeConnectModal() {
+  document.getElementById('connect-modal').classList.add('hidden');
+}
+
+function cap(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+// ── On load: restore connection state from saved cookies or API credentials ──
+async function init_seller() {
+  try {
+    const connections = await window.pywebview.api.get_all_connections();
+    Object.entries(connections).forEach(([platform, isConnected]) => {
+      if (isConnected) markConnected(platform);
+    });
+  } catch(e) {
+    // Preview mode — skip
+  }
+}
+</script>

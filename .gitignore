@@ -1,0 +1,31 @@
+# Secrets
+.env
+
+# Models (Local GGUF models and weights)
+models/
+
+# Session and credentials data containing media cookies and accounts keys
+data/sessions/
+
+# Python caching and compiled bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# OS and system files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+debug_log.txt
+
+# PyInstaller distribution and build outputs
+build/
+dist/
+*.spec
+
+# Node/Frontend dependencies (if any)
+node_modules/

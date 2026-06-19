@@ -1,0 +1,947 @@
+<!-- screens/workflow.html — Active Workflow: Click to Browse Hub -->
+<div class="w-full h-full animated-bg flex flex-col overflow-hidden">
+
+  <!-- ── Top Nav ─────────────────────────────────────────────────────────── -->
+  <nav class="flex items-center justify-between px-10 py-4 glass-card border-b border-sky-100 shadow-sm flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <button onclick="transitionTo('seller')" id="wf-back-btn"
+              class="w-9 h-9 rounded-xl hover:bg-sky-100 flex items-center justify-center transition-colors"
+              title="Back to Seller Hub">
+        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div class="w-px h-6 bg-sky-100"></div>
+      <span class="font-heading text-xl font-bold gradient-text tracking-wider">MULA GO</span>
+      <span class="text-slate-300 font-light text-lg">/</span>
+      <span class="font-heading text-base font-semibold text-sky-500">Seller Mode</span>
+      <span class="text-slate-300 font-light text-lg">/</span>
+      <span class="font-heading text-base font-semibold text-slate-500">Workflow</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <!-- Image count badge -->
+      <div id="wf-count-badge" class="hidden items-center gap-1.5 bg-sky-100 text-sky-700 text-xs
+                font-heading font-semibold rounded-full px-3 py-1 tracking-wider uppercase">
+        <span id="wf-count-num">0</span> images queued
+      </div>
+      <!-- Process button — placeholder for AI + auto-post -->
+      <button id="wf-process-btn"
+              class="btn-primary text-sm py-2 px-5 flex items-center gap-2 hidden"
+              onclick="startProcessing()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Process & Post
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main Content: Drop Zone + Queue ───────────────────────────────── -->
+  <div class="flex-1 flex gap-0 overflow-hidden">
+
+    <!-- Left: Drop Zone Panel -->
+    <div class="flex-1 flex flex-col items-center justify-start py-6 px-10 overflow-y-auto"
+         style="animation: slideUp 0.5s ease 0.1s both; opacity:0;">
+
+      <div class="w-full max-w-lg">
+        <!-- Drop Zone -->
+        <div id="drop-zone"
+             class="relative w-full rounded-3xl border-2 border-dashed border-sky-300
+                    bg-white/70 backdrop-blur flex flex-col items-center justify-center
+                    cursor-pointer transition-all duration-300 hover:border-sky-500
+                    hover:bg-sky-50/80 hover:shadow-xl group"
+             style="min-height: 200px;"
+             onclick="triggerFolderPicker()">
+
+          <!-- Idle state -->
+          <div id="dz-idle" class="flex flex-col items-center gap-3 px-6 py-6 text-center pointer-events-none">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-100 to-sky-200
+                        flex items-center justify-center group-hover:scale-110 transition-transform">
+              <!-- Folder-open icon -->
+              <svg class="w-7 h-7 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M3 15l4-4 4 4 4-4 4 4"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-heading font-bold text-sky-700 text-base mb-1">
+                Click to Browse Product Folder
+              </p>
+              <p class="font-body text-slate-400 text-xs leading-relaxed">
+                Select a folder of product or design images<br/>to start the AI pipeline.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="inline-flex items-center gap-1 bg-sky-100 text-sky-600 text-xs
+                           font-heading font-semibold rounded-full px-3 py-1">
+                .JPG
+              </span>
+              <span class="inline-flex items-center gap-1 bg-sky-100 text-sky-600 text-xs
+                           font-heading font-semibold rounded-full px-3 py-1">
+                .PNG
+              </span>
+              <span class="inline-flex items-center gap-1 bg-sky-100 text-sky-600 text-xs
+                           font-heading font-semibold rounded-full px-3 py-1">
+                .WEBP
+              </span>
+              <span class="text-slate-300 text-xs font-body">+ more</span>
+            </div>
+          </div>
+
+          <!-- Scanning state -->
+          <div id="dz-scanning" class="hidden flex-col items-center gap-3 px-6 py-6 text-center pointer-events-none">
+            <div class="w-16 h-16 rounded-2xl bg-sky-100 flex items-center justify-center">
+              <svg class="w-8 h-8 animate-spin text-sky-500" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+              </svg>
+            </div>
+            <p class="font-heading font-bold text-sky-700 text-base">Scanning folder…</p>
+            <p class="font-body text-slate-400 text-sm" id="dz-scan-msg">Looking for images…</p>
+          </div>
+
+          <!-- Preview state -->
+          <div id="dz-preview" class="hidden absolute inset-0 w-full h-full flex flex-col items-center justify-center text-center pointer-events-none overflow-hidden rounded-3xl">
+            <img id="dz-preview-img" class="absolute inset-0 w-full h-full object-cover opacity-90" src="" />
+            <div class="absolute inset-0 bg-gradient-to-t from-sky-950/90 via-sky-900/30 to-transparent flex flex-col justify-end p-4">
+              <p class="font-heading font-bold text-white text-base truncate" id="dz-preview-filename">Product Image Preview</p>
+              <p class="font-body text-sky-200 text-xs mt-0.5">Click to change product folder</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Folder info pill (shown after scan) -->
+        <div id="wf-folder-pill" class="hidden mt-4 flex items-center gap-3 bg-white rounded-2xl
+                                         px-4 py-3 shadow border border-sky-100">
+          <svg class="w-5 h-5 text-sky-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+          </svg>
+          <span id="wf-folder-name" class="font-body text-slate-600 text-sm truncate flex-1"></span>
+          <button onclick="clearQueue()"
+                  class="text-xs text-slate-400 hover:text-red-500 font-heading font-semibold
+                         transition-colors ml-2 flex-shrink-0">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- ── BROADCAST DESTINATIONS ──────────────────────────────────────── -->
+      <div id="broadcast-section" class="w-full max-w-lg mt-3"
+           style="animation: slideUp 0.5s ease 0.15s both; opacity:0;">
+        <div class="rounded-2xl border border-sky-100 bg-white/80 backdrop-blur shadow-sm px-5 py-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="font-heading font-bold text-slate-700 text-xs tracking-widest uppercase">Broadcast Destinations</p>
+              <p class="font-body text-slate-400 text-xs mt-0.5" id="broadcast-hint">Connect accounts in Seller Hub to enable</p>
+            </div>
+            <div class="w-2 h-2 rounded-full bg-sky-400" id="broadcast-dot"
+                 style="animation: pulseRing 2s ease-in-out infinite;"></div>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap" id="platform-pills">
+            <!-- Instagram pill -->
+            <button id="pill-instagram" data-platform="instagram"
+                    onclick="_togglePill(this)"
+                    class="platform-pill pill-off" disabled>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+              Instagram
+            </button>
+            <!-- TikTok pill -->
+            <button id="pill-tiktok" data-platform="tiktok"
+                    onclick="_togglePill(this)"
+                    class="platform-pill pill-off" disabled>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.75a4.85 4.85 0 01-1.01-.06z"/>
+              </svg>
+              TikTok
+            </button>
+            <!-- X / Twitter pill -->
+            <button id="pill-twitter" data-platform="twitter"
+                    onclick="_togglePill(this)"
+                    class="platform-pill pill-off" disabled>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L2.25 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+              </svg>
+              X
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ── END BROADCAST DESTINATIONS ─────────────────────────────────── -->
+
+      <!-- ── IMAGE EDITING WORKFLOW ──────────────────────────────────────── -->
+      <div id="image-edit-section" class="w-full max-w-lg mt-3"
+           style="animation: slideUp 0.5s ease 0.18s both; opacity:0;">
+        <div class="rounded-2xl border border-sky-100 bg-white/80 backdrop-blur shadow-sm px-5 py-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="cb-enable-edit" onchange="toggleImageEditOptions()" class="w-4 h-4 text-sky-600 border-sky-300 rounded focus:ring-sky-500">
+              <label for="cb-enable-edit" class="font-heading font-bold text-slate-700 text-xs tracking-widest uppercase cursor-pointer">Enable Image Editing</label>
+            </div>
+            <div class="w-2 h-2 rounded-full bg-slate-300" id="edit-dot"></div>
+          </div>
+          
+          <div id="image-edit-options" class="hidden flex-col gap-3 mt-3">
+            <p class="font-body text-slate-400 text-xs">Select a style preset to generate editing instructions for Gemini Nano:</p>
+            <div class="flex items-center gap-2 flex-wrap" id="style-pills">
+              <button onclick="selectStyle('elegant')" class="style-pill pill-on" data-style="elegant">Elegant</button>
+              <button onclick="selectStyle('cheerful')" class="style-pill pill-off" data-style="cheerful">Cheerful</button>
+              <button onclick="selectStyle('clear')" class="style-pill pill-off" data-style="clear">Clear</button>
+              <button onclick="selectStyle('warm')" class="style-pill pill-off" data-style="warm">Warm</button>
+              <button onclick="selectStyle('fresh')" class="style-pill pill-off" data-style="fresh">Fresh</button>
+            </div>
+            
+            <div class="flex items-center justify-between mt-2 pt-2 border-t border-sky-50">
+              <span class="font-heading font-semibold text-slate-600 text-xs uppercase tracking-wider">Number of Edits</span>
+              <select id="sel-num-edits" class="bg-white border border-sky-200 text-slate-700 font-heading text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:border-sky-500 focus:ring-sky-500 cursor-pointer">
+                <option value="1">1 Prompt (Model Placement)</option>
+                <option value="2" selected>2 Prompts (Model + Studio HD)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ── END IMAGE EDITING WORKFLOW ──────────────────────────────────── -->
+
+      <!-- ── LIVE STATUS FEED ─────────────────────────────────────────────── -->
+      <div id="status-feed-section" class="hidden w-full max-w-lg mt-3"
+           style="animation: slideUp 0.4s ease both;">
+        <div class="rounded-2xl border border-sky-100 bg-white shadow-sm overflow-hidden">
+          <div class="px-4 py-3 border-b border-sky-50 flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-sky-500" id="feed-pulse"
+                 style="animation: pulseRing 1.4s ease-in-out infinite;"></div>
+            <span class="font-heading font-bold text-sky-700 text-xs tracking-wider uppercase">Live Status Feed</span>
+            <span class="ml-auto font-body text-slate-400 text-xs" id="feed-image-counter"></span>
+          </div>
+          <div id="feed-log" class="p-4 space-y-2.5 max-h-52 overflow-y-auto"></div>
+          <div id="feed-done-banner" class="hidden border-t border-green-100 bg-green-50 px-4 py-3">
+            <p class="font-heading font-semibold text-green-700 text-xs">All images processed. Queue complete.</p>
+          </div>
+        </div>
+      </div>
+      <!-- ── END STATUS FEED ─────────────────────────────────────────────── -->
+
+
+    </div>
+
+    <!-- Right: Image Queue Panel -->
+    <div class="w-80 flex-shrink-0 border-l border-sky-100 bg-white/60 backdrop-blur flex flex-col"
+         style="animation: slideUp 0.5s ease 0.2s both; opacity:0;">
+
+      <!-- Queue header -->
+      <div class="px-5 py-4 border-b border-sky-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-heading font-bold text-sky-700 text-sm">Image Queue</h3>
+          <p class="font-body text-slate-400 text-xs" id="queue-subtitle">No images loaded yet</p>
+        </div>
+        <button onclick="clearQueue()" id="queue-clear-btn"
+                class="hidden text-xs text-slate-400 hover:text-red-500 font-heading font-semibold transition-colors">
+          Clear All
+        </button>
+      </div>
+
+      <!-- Empty state -->
+      <div id="queue-empty" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-sky-50 flex items-center justify-center mb-3">
+          <svg class="w-7 h-7 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2
+                 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6
+                 a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <p class="font-body text-slate-400 text-xs leading-relaxed">
+          Drop a product folder on the left to populate the image queue.
+        </p>
+      </div>
+
+      <!-- Image list (scrollable) -->
+      <div id="queue-list" class="hidden flex-1 overflow-y-auto p-3 space-y-2"></div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* Drop zone hover state */
+#drop-zone:hover {
+  border-color: #0ea5e9;
+}
+#drop-zone.dz-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+/* Image queue card */
+.queue-card {
+  background: #f8fafc;
+  border: 1px solid #e0f2fe;
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.2s;
+}
+.queue-card:hover { border-color: #7dd3fc; }
+.queue-card .ext-badge {
+  font-size: 0.6rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: #0369a1;
+  background: #e0f2fe;
+  border-radius: 0.35rem;
+  padding: 2px 6px;
+  flex-shrink: 0;
+}
+.queue-card.status-scanning { border-color: #38bdf8; background: #f0f9ff; }
+.queue-card.status-seo      { border-color: #fb923c; background: #fff7ed; }
+.queue-card.status-posting  { border-color: #a78bfa; background: #f5f3ff; }
+.queue-card.status-done     { border-color: #4ade80; background: #f0fdf4; }
+.queue-card.status-failed   { border-color: #f87171; background: #fef2f2; }
+/* Status dot per card */
+.card-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #e2e8f0;
+}
+.status-scanning .card-status-dot { background: #38bdf8; animation: pulse 1.2s infinite; }
+.status-seo      .card-status-dot { background: #fb923c; animation: pulse 1.2s infinite; }
+.status-posting  .card-status-dot { background: #a78bfa; animation: pulse 1.2s infinite; }
+.status-done     .card-status-dot { background: #4ade80; }
+.status-failed   .card-status-dot { background: #f87171; }
+/* 🐛 DEBUG: Moondream Vision Output box */
+.debug-vision-box {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  display: none;           /* hidden until text arrives */
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.debug-vision-box.debug-visible { display: flex; }
+.debug-vision-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.debug-vision-text {
+  font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+  font-size: 0.6rem;
+  color: #94a3b8;
+  line-height: 1.55;
+  word-break: break-word;
+  white-space: pre-wrap;
+  max-height: 90px;
+  overflow-y: auto;
+}
+.debug-vision-text.debug-filled { color: #e2e8f0; }
+/* AI Vision box inside each card */
+.vision-box {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.vision-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #0369a1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.vision-text {
+  font-family: 'JetBrains Mono', 'Fira Mono', monospace;
+  font-size: 0.6rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+  max-height: 72px;
+  overflow-y: auto;
+}
+.vision-text.vision-filled {
+  color: #475569;
+  animation: slideUp 0.4s ease both;
+}
+/* Platform toggle pills */
+.platform-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.35rem 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1.5px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.pill-off {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #64748b;
+}
+.pill-off:hover:not(:disabled) {
+  border-color: #7dd3fc;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+.pill-on {
+  border-color: #0ea5e9;
+  background: #0ea5e9;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(14,165,233,0.3);
+}
+.pill-disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+}
+/* Style toggle pills */
+.style-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.35rem 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1.5px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+/* Image Edit box inside card */
+.edit-box {
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.edit-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #db2777;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.edit-text {
+  font-family: 'JetBrains Mono', 'Fira Mono', monospace;
+  font-size: 0.6rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+  max-height: 72px;
+  overflow-y: auto;
+}
+.edit-text.edit-filled {
+  color: #831843;
+  animation: slideUp 0.4s ease both;
+}
+/* Feed entry animation */
+.feed-entry { animation: slideUp 0.3s ease both; }
+.feed-entry.active-entry {
+  border-left: 2px solid #0ea5e9;
+  padding-left: 8px;
+  margin-left: -10px;
+}
+.feed-entry.active-entry .feed-msg { color: #0369a1; font-weight: 600; }
+</style>
+
+<script>
+// ── Workflow Screen State ────────────────────────────────────────────────────
+let _wfImages = [];
+let _selectedPlatforms = new Set();
+let _selectedStyle = 'elegant';
+
+function toggleImageEditOptions() {
+  const cb = document.getElementById('cb-enable-edit');
+  const options = document.getElementById('image-edit-options');
+  const dot = document.getElementById('edit-dot');
+  if (cb.checked) {
+    options.classList.remove('hidden');
+    options.classList.add('flex');
+    dot.classList.remove('bg-slate-300');
+    dot.classList.add('bg-sky-400');
+    dot.style.animation = 'pulseRing 2s ease-in-out infinite';
+  } else {
+    options.classList.remove('flex');
+    options.classList.add('hidden');
+    dot.classList.remove('bg-sky-400');
+    dot.classList.add('bg-slate-300');
+    dot.style.animation = 'none';
+  }
+}
+
+function selectStyle(style) {
+  _selectedStyle = style;
+  document.querySelectorAll('.style-pill').forEach(pill => {
+    if (pill.dataset.style === style) {
+      pill.classList.remove('pill-off');
+      pill.classList.add('pill-on');
+    } else {
+      pill.classList.remove('pill-on');
+      pill.classList.add('pill-off');
+    }
+  });
+}
+
+function init_workflow() {
+  _refreshQueueFromPython();
+  _initPlatformPills();
+}
+
+async function _refreshQueueFromPython() {
+  try {
+    const q = await window.pywebview.api.get_image_queue();
+    if (q && q.length > 0) _renderQueue(q);
+  } catch(e) {}
+}
+
+// ── Platform pill initialisation ─────────────────────────────────────────────
+async function _initPlatformPills() {
+  try {
+    // Reset all platform pills and selection set first
+    _selectedPlatforms.clear();
+    document.querySelectorAll('.platform-pill').forEach(pill => {
+      pill.disabled = true;
+      pill.classList.remove('pill-on', 'pill-disabled');
+      pill.classList.add('pill-off');
+    });
+
+    const connected = await window.pywebview.api.get_connected_platforms();
+    connected.forEach(platform => {
+      const pill = document.getElementById(`pill-${platform}`);
+      if (!pill) return;
+      pill.disabled = false;
+      // Auto-select connected platforms by default
+      _selectedPlatforms.add(platform);
+      pill.classList.remove('pill-off');
+      pill.classList.add('pill-on');
+    });
+    // Disable + grey out unconnected pills
+    document.querySelectorAll('.platform-pill').forEach(pill => {
+      if (pill.disabled) pill.classList.add('pill-disabled');
+    });
+    const hint = document.getElementById('broadcast-hint');
+    if (hint) hint.textContent = connected.length
+      ? `${connected.length} platform${connected.length > 1 ? 's' : ''} connected — toggle to include`
+      : 'Connect accounts in Seller Hub to enable';
+  } catch(e) {
+    // Preview mode: enable all pills for demo
+    document.querySelectorAll('.platform-pill').forEach(pill => {
+      pill.disabled = false;
+      pill.classList.remove('pill-disabled');
+    });
+  }
+}
+
+function _togglePill(btn) {
+  const platform = btn.dataset.platform;
+  if (!platform || btn.disabled) return;
+  if (_selectedPlatforms.has(platform)) {
+    _selectedPlatforms.delete(platform);
+    btn.classList.remove('pill-on');
+    btn.classList.add('pill-off');
+  } else {
+    _selectedPlatforms.add(platform);
+    btn.classList.remove('pill-off');
+    btn.classList.add('pill-on');
+  }
+}
+
+// -- Folder Picker (click trigger) -------------------------------------------
+// select_product_folder() uses self._window (injected window ref) to avoid
+// PyWebView threading deadlocks. Returns {status, folder, images} or
+// {status: 'cancelled'} or {status: 'error', message}.
+async function triggerFolderPicker() {
+  // Guard: pywebview bridge must be ready. boot() guarantees this at runtime.
+  if (typeof window.pywebview === 'undefined' || !window.pywebview.api) {
+    console.warn('[Workflow] pywebview not ready -- using mock data for preview.');
+    _onScanSuccess(_mockScanResult());
+    return;
+  }
+
+  const zone = document.getElementById('drop-zone');
+  if (zone.classList.contains('dz-loading')) return;  // prevent double-click
+  zone.classList.add('dz-loading');
+  setDropZoneState('scanning');
+
+  try {
+    console.log('[Workflow] Calling select_product_folder...');
+    const result = await window.pywebview.api.select_product_folder();
+    console.log('[Workflow] select_product_folder result:', result);
+
+    if (!result) { setDropZoneState('idle'); return; }
+
+    if (result.status === 'success') {
+      _onScanSuccess(result);           // result has .folder + .images
+    } else if (result.status === 'cancelled') {
+      setDropZoneState('idle');         // user dismissed dialog -- no alert
+    } else {
+      // result.status === 'error'
+      setDropZoneState('idle');
+      console.error('[Workflow] select_product_folder error:', result.message);
+      alert('PYTHON ERROR:\\n' + (result.message || 'Unknown error'));
+    }
+  } catch(e) {
+    // Unexpected JS exception
+    console.error('[Workflow] triggerFolderPicker threw:', e);
+    setDropZoneState('idle');
+    alert('JS BRIDGE ERROR:\\n' + e.name + '\\n' + e.message + '\\n\\nStack:\\n' + e.stack);
+  } finally {
+    zone.classList.remove('dz-loading');
+  }
+}
+
+// ── Drag & Drop handlers (REMOVED — D&D blocked by PyWebView security) ───────
+// Stub functions kept to avoid JS errors if any residual event fires.
+function handleDragOver(e) { e.preventDefault(); }
+function handleDragLeave(e) { e.preventDefault(); }
+function handleDrop(e) { e.preventDefault(); }
+
+// ── Scan result handler ────────────────────────────────────────────
+async function _onScanSuccess(result) {
+  _wfImages = result.images || [];
+
+  // Show folder pill
+  const pill = document.getElementById('wf-folder-pill');
+  const folderName = result.folder ? result.folder.split(/[/\\\\]/).pop() : 'Selected Folder';
+  document.getElementById('wf-folder-name').textContent = `${folderName} · ${_wfImages.length} images`;
+  pill.classList.remove('hidden');
+
+  // Reset status feed — only shown when Process & Post is clicked
+  document.getElementById('feed-log').innerHTML = '';
+  document.getElementById('feed-done-banner').classList.add('hidden');
+  document.getElementById('status-feed-section').classList.add('hidden');
+
+  _renderQueue(_wfImages);
+
+  // Set drop zone state based on whether images were loaded
+  if (_wfImages.length > 0) {
+    setDropZoneState('preview');
+    // Load first image as preview
+    const firstImg = _wfImages[0];
+    document.getElementById('dz-preview-filename').textContent = firstImg.filename;
+    
+    // Request Base64 encoding of image from Python
+    try {
+      const b64 = await window.pywebview.api.get_image_base64(firstImg.path);
+      if (b64) {
+        document.getElementById('dz-preview-img').src = b64;
+      } else {
+        document.getElementById('dz-preview-img').src = "";
+      }
+    } catch(e) {
+      document.getElementById('dz-preview-img').src = "";
+    }
+  } else {
+    setDropZoneState('idle');
+  }
+}
+
+// ── Queue rendering ──────────────────────────────────────────────────────────
+function _renderQueue(images) {
+  const list     = document.getElementById('queue-list');
+  const empty    = document.getElementById('queue-empty');
+  const subtitle = document.getElementById('queue-subtitle');
+  const clearBtn = document.getElementById('queue-clear-btn');
+  const countBadge = document.getElementById('wf-count-badge');
+  const processBtn = document.getElementById('wf-process-btn');
+
+  if (!images || images.length === 0) {
+    list.classList.add('hidden');
+    empty.classList.remove('hidden');
+    subtitle.textContent = 'No images loaded yet';
+    clearBtn.classList.add('hidden');
+    countBadge.classList.add('hidden');
+    processBtn.classList.add('hidden');
+    return;
+  }
+
+  // Update counts
+  subtitle.textContent = `${images.length} image${images.length !== 1 ? 's' : ''} ready`;
+  document.getElementById('wf-count-num').textContent = images.length;
+  countBadge.classList.remove('hidden');
+  countBadge.classList.add('flex');
+  clearBtn.classList.remove('hidden');
+  processBtn.classList.remove('hidden');
+
+  // Render cards
+  list.innerHTML = images.map((img, i) => `
+    <div class="queue-card" id="qcard-${i}">
+      <div class="flex items-center gap-2">
+        <div class="card-status-dot" title="pending"></div>
+        <span class="ext-badge">${img.ext || 'IMG'}</span>
+        <div class="flex-1 min-w-0">
+          <div class="font-heading font-semibold text-slate-700 text-xs truncate">${img.filename}</div>
+          <div class="font-body text-slate-400 text-xs">${_formatBytes(img.size)}</div>
+        </div>
+        <span class="status-label font-heading text-slate-300" style="font-size:0.6rem;font-weight:700;">Queued</span>
+      </div>
+      <div class="vision-box" id="vision-${i}">
+        <span class="vision-label">AI Vision (Moondream):</span>
+        <span class="vision-text" id="vision-text-${i}">Awaiting vision scan…</span>
+      </div>
+      <div class="debug-vision-box" id="debug-box-${i}">
+        <span class="debug-vision-label">🐛 DEBUG: Moondream Vision Output</span>
+        <pre class="debug-vision-text" id="debug-text-${i}"></pre>
+      </div>
+      <div class="edit-box hidden mt-1" id="edit-box-${i}">
+        <span class="edit-label">Image Edit Prompt (Gemini Nano):</span>
+        <span class="edit-text" id="edit-text-${i}">Awaiting style prompt…</span>
+      </div>
+    </div>
+  `).join('');
+
+  empty.classList.add('hidden');
+  list.classList.remove('hidden');
+}
+
+// ── Clear queue ──────────────────────────────────────────────────────────────
+async function clearQueue() {
+  try { await window.pywebview.api.clear_image_queue(); } catch(e) {}
+  _wfImages = [];
+  document.getElementById('wf-folder-pill').classList.add('hidden');
+  document.getElementById('status-feed-section').classList.add('hidden');
+  setDropZoneState('idle');
+  _renderQueue([]);
+}
+
+// ── Process & Post (future) ───────────────────────────────────────────────────
+// ── Process & Post — LIVE PIPELINE ─────────────────────────────────────────
+let _pipelinePollInterval = null;
+let _lastLogLength = 0;
+
+async function startProcessing() {
+  if (!_wfImages || _wfImages.length === 0) return;
+  const btn = document.getElementById('wf-process-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Processing...';
+
+  document.getElementById('status-feed-section').classList.remove('hidden');
+  document.getElementById('feed-log').innerHTML = '';
+  document.getElementById('feed-done-banner').classList.add('hidden');
+  document.getElementById('feed-pulse').style.animation = 'pulseRing 1.4s ease-in-out infinite';
+  _lastLogLength = 0;
+
+  const paths = _wfImages.map(img => img.path).filter(Boolean);
+  const platforms = [..._selectedPlatforms];
+  const editImage = document.getElementById('cb-enable-edit').checked;
+  const imageStyle = _selectedStyle;
+  const numEdits = parseInt(document.getElementById('sel-num-edits').value) || 2;
+  try {
+    const res = await window.pywebview.api.run_pipeline(paths, platforms, editImage, imageStyle, numEdits);
+    if (!res || !res.success) {
+      _appendFeedEntry('00:00', (res && res.message) || 'Pipeline could not start.');
+      btn.disabled = false;
+      return;
+    }
+    document.getElementById('feed-image-counter').textContent = `0 / ${res.total} images`;
+  } catch(e) { _simulateFeedPreview(); return; }
+
+  _pipelinePollInterval = setInterval(_pollPipeline, 1000);
+}
+
+async function _pollPipeline() {
+  try {
+    const s = await window.pywebview.api.get_pipeline_status();
+    s.log.slice(_lastLogLength).forEach(e => _appendFeedEntry(e.ts, e.msg));
+    _lastLogLength = s.log.length;
+    if (s.total > 0)
+      document.getElementById('feed-image-counter').textContent =
+        `${Math.min(s.current_index + 1, s.total)} / ${s.total} images`;
+    if (s.queue_status)
+      _wfImages.forEach((img, i) => {
+        const st = img.path && s.queue_status[img.path];
+        if (st) _updateQueueCard(i, st);
+      });
+    // Inject Moondream vision text into cards as soon as it arrives
+    if (s.vision_data)
+      _wfImages.forEach((img, i) => {
+        const raw = img.path && s.vision_data[img.path];
+        if (raw) _updateVisionText(i, raw);
+      });
+    // Inject Image Edit prompt into cards
+    if (s.edit_data)
+      _wfImages.forEach((img, i) => {
+        const prompt = img.path && s.edit_data[img.path];
+        if (prompt) _updateEditText(i, prompt);
+      });
+    if (s.done && !s.running) {
+      clearInterval(_pipelinePollInterval);
+      document.getElementById('feed-pulse').style.animation = 'none';
+      document.getElementById('feed-pulse').style.background = '#4ade80';
+      document.getElementById('feed-done-banner').classList.remove('hidden');
+      const btn = document.getElementById('wf-process-btn');
+      btn.disabled = false;
+      btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Process &amp; Post';
+    }
+  } catch(e) {}
+}
+
+function _updateVisionText(index, rawText) {
+  const el = document.getElementById(`vision-text-${index}`);
+  if (!el || el.dataset.filled) return;
+  el.dataset.filled = '1';
+  el.textContent = rawText;
+  el.classList.add('vision-filled');
+}
+
+function _updateEditText(index, promptData) {
+  const box = document.getElementById(`edit-box-${index}`);
+  const el = document.getElementById(`edit-text-${index}`);
+  if (!box || !el || el.dataset.filled) return;
+  
+  box.classList.remove('hidden');
+  el.dataset.filled = '1';
+  
+  if (Array.isArray(promptData)) {
+    el.innerHTML = promptData.map((p, i) => `
+      <div class="mb-2 last:mb-0">
+        <div class="font-bold uppercase tracking-wider" style="font-size:0.55rem; color:#db2777;">
+          Prompt ${i+1} (${i === 0 ? 'Model Placement' : 'Studio HD & Particles'}):
+        </div>
+        <div class="text-slate-700 mt-0.5" style="line-height:1.45;">${_escHtml(p)}</div>
+      </div>
+    `).join('');
+  } else {
+    el.textContent = promptData;
+  }
+  el.classList.add('edit-filled');
+}
+
+function _appendFeedEntry(ts, msg) {
+  // ── Intercept debug sentinel from pipeline.py ────────────────────────────
+  // pipeline.py emits "__VISION_DEBUG__:<raw moondream text>" immediately
+  // after the vision scan. We route it to the active card's debug box
+  // instead of the live feed so it doesn't pollute the feed log.
+  const DEBUG_PREFIX = '__VISION_DEBUG__:';
+  if (msg.startsWith(DEBUG_PREFIX)) {
+    const rawText = msg.slice(DEBUG_PREFIX.length);
+    // Inject into the currently-processing card (current_index)
+    const activeIndex = _wfImages.findIndex(
+      (img, i) => document.getElementById(`qcard-${i}`) &&
+                  document.getElementById(`qcard-${i}`).classList.contains('status-scanning')
+    );
+    const idx = activeIndex >= 0 ? activeIndex : 0;
+    _injectDebugVision(idx, rawText);
+    return;  // don't add to the visible feed log
+  }
+
+  const log = document.getElementById('feed-log');
+  log.querySelectorAll('.active-entry').forEach(el => el.classList.remove('active-entry'));
+  const div = document.createElement('div');
+  div.className = 'feed-entry active-entry flex items-start gap-3';
+  div.innerHTML = `<span class="font-mono text-xs text-slate-300 mt-0.5 flex-shrink-0 select-none">[${_escHtml(ts)}]</span><span class="feed-msg font-body text-sm leading-snug text-slate-600">${_escHtml(msg)}</span>`;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function _injectDebugVision(index, rawText) {
+  // Also update the "AI Vision" soft box
+  _updateVisionText(index, rawText);
+  // Show the dark debug box
+  const box  = document.getElementById(`debug-box-${index}`);
+  const pre  = document.getElementById(`debug-text-${index}`);
+  if (!box || !pre || pre.dataset.filled) return;
+  pre.dataset.filled = '1';
+  pre.textContent = rawText;
+  pre.classList.add('debug-filled');
+  box.classList.add('debug-visible');
+}
+
+function _updateQueueCard(index, status) {
+  const card = document.getElementById(`qcard-${index}`);
+  if (!card) return;
+  card.classList.remove('status-scanning','status-seo','status-posting','status-done','status-failed');
+  if (status && status !== 'pending') card.classList.add(`status-${status}`);
+  const lbl = card.querySelector('.status-label');
+  if (lbl) lbl.textContent = ({pending:'Queued',scanning:'Scanning',seo:'SEO',posting:'Posting',done:'Done',failed:'Failed'})[status] || status;
+}
+
+function _escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _simulateFeedPreview() {
+  document.getElementById('status-feed-section').classList.remove('hidden');
+  [['00:01',"Taking a closer look at your product's unique features..."],
+   ['00:04','Crafting the perfect sales copy to engage your audience...'],
+   ['00:07','Preparing the stage for your global social media drop...'],
+   ['00:09','Broadcasting your content across connected networks...'],
+   ['00:15','Published successfully. Ready for the next masterpiece.'],
+  ].forEach(([ts,msg],i) => setTimeout(() => {
+    _appendFeedEntry(ts,msg);
+    if (i===4) {
+      document.getElementById('feed-done-banner').classList.remove('hidden');
+      document.getElementById('feed-pulse').style.background='#4ade80';
+    }
+  }, i*1400));
+}
+
+// ── Drop zone visual state machine ──────────────────────────────────────────
+function setDropZoneState(state) {
+  // Helper: hide an element by ID safely (no crash if it was removed from DOM)
+  const _hide = id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); };
+  const _show = id => { const el = document.getElementById(id); if (el) el.classList.remove('hidden'); };
+
+  _hide('dz-idle');
+  _hide('dz-hover');      // removed from DOM but guard prevents crash
+  _hide('dz-scanning');
+  _hide('dz-preview');
+
+  if (state === 'idle') {
+    _show('dz-idle');
+  } else if (state === 'scanning') {
+    const s = document.getElementById('dz-scanning');
+    if (s) { s.classList.remove('hidden'); s.classList.add('flex'); }
+  } else if (state === 'preview') {
+    _show('dz-preview');
+  }
+}
+
+// ── Utilities ────────────────────────────────────────────────────────────────
+function _formatBytes(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024)        return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+// Preview/dev mode mock data
+function _mockScanResult() {
+  const mockImages = [
+    { filename: 'product_front.jpg',  ext: 'JPG',  size: 245760,  rel_folder: '' },
+    { filename: 'product_back.jpg',   ext: 'JPG',  size: 189440,  rel_folder: '' },
+    { filename: 'lifestyle_01.png',   ext: 'PNG',  size: 1048576, rel_folder: '' },
+    { filename: 'closeup_detail.jpg', ext: 'JPG',  size: 307200,  rel_folder: 'detail' },
+    { filename: 'banner_wide.webp',   ext: 'WEBP', size: 512000,  rel_folder: '' },
+  ];
+  return { success: true, folder: 'C:\\Users\\Demo\\Products\\My Product', count: mockImages.length, images: mockImages };
+}
+</script>

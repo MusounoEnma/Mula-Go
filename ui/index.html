@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MULA GO</title>
+  <meta name="description" content="MULA GO — Local-first desktop automation suite for global sellers and creators." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Poppins', 'sans-serif'],
+            body: ['Lato', 'sans-serif'],
+          },
+          colors: {
+            sky: { 50:'#f0f9ff', 100:'#e0f2fe', 500:'#0ea5e9', 700:'#0369a1', 900:'#0c4a6e' },
+            slate: { 100:'#f1f5f9', 400:'#94a3b8', 600:'#475569', 700:'#334155' }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease forwards',
+            'fade-out': 'fadeOut 0.5s ease forwards',
+            'slide-up': 'slideUp 0.5s ease forwards',
+            'spin-slow': 'spin 3s linear infinite',
+            'pulse-ring': 'pulseRing 2s ease-in-out infinite',
+            'shake': 'shake 0.4s ease',
+          },
+          keyframes: {
+            fadeIn:    { '0%':{ opacity:'0' }, '100%':{ opacity:'1' } },
+            fadeOut:   { '0%':{ opacity:'1' }, '100%':{ opacity:'0' } },
+            slideUp:   { '0%':{ opacity:'0', transform:'translateY(24px)' }, '100%':{ opacity:'1', transform:'translateY(0)' } },
+            pulseRing: { '0%,100%':{ opacity:'0.3', transform:'scale(1)' }, '50%':{ opacity:'1', transform:'scale(1.08)' } },
+            shake:     { '0%,100%':{ transform:'translateX(0)' }, '20%,60%':{ transform:'translateX(-6px)' }, '40%,80%':{ transform:'translateX(6px)' } },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-sky-50 font-body text-slate-600 overflow-hidden select-none">
+
+  <!-- ── Screen Container ── -->
+  <div id="app" class="w-screen h-screen relative">
+
+    <!-- Splash -->
+    <div id="screen-splash" class="screen active"></div>
+
+    <!-- Activation (The Guard) -->
+    <div id="screen-activation" class="screen"></div>
+
+    <!-- Dashboard -->
+    <div id="screen-dashboard" class="screen"></div>
+
+    <!-- Seller Mode -->
+    <div id="screen-seller" class="screen"></div>
+
+    <!-- Drag & Drop Workflow -->
+    <div id="screen-workflow" class="screen"></div>
+
+    <!-- ─── First-Boot Model Download Overlay ──────────────────────────────── -->
+    <!-- Sits above ALL screens (z-50). Hidden unless model is missing. -->
+    <div id="model-dl-overlay"
+         class="hidden fixed inset-0 z-50 flex items-center justify-center"
+         style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+
+      <div class="glass-card rounded-3xl shadow-2xl p-10 max-w-md w-full mx-6 text-center"
+           style="animation: slideUp 0.6s ease both;">
+
+        <!-- Animated logo icon -->
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600
+                    flex items-center justify-center mx-auto mb-6 shadow-lg shadow-sky-200"
+             style="animation: pulseRing 2.5s ease-in-out infinite;">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3
+                 m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547
+                 A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531
+                 c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+
+        <h2 class="font-heading text-2xl font-extrabold gradient-text mb-2">MULA GO</h2>
+        <p class="font-body text-slate-500 text-sm leading-relaxed mb-6" id="dl-headline">
+          Initializing core intelligence modules for the first time.
+          Please do not close the application...
+        </p>
+
+        <!-- Progress bar -->
+        <div class="w-full bg-sky-100 rounded-full h-2 mb-3 overflow-hidden">
+          <div id="dl-bar"
+               class="h-2 rounded-full transition-all duration-700"
+               style="width:0%; background: linear-gradient(90deg,#38bdf8,#0ea5e9);"></div>
+        </div>
+
+        <div class="flex items-center justify-between mb-6">
+          <span class="font-body text-slate-400 text-xs" id="dl-status">Connecting to Hugging Face...</span>
+          <span class="font-heading font-bold text-sky-600 text-xs" id="dl-pct">0%</span>
+        </div>
+
+        <!-- Error state -->
+        <div id="dl-error-box" class="hidden rounded-xl bg-red-50 border border-red-200 p-4 mb-4 text-left">
+          <p class="font-heading font-semibold text-red-700 text-xs mb-1">Download Error</p>
+          <p class="font-body text-red-500 text-xs" id="dl-error-msg"></p>
+          <button onclick="_retryDownload()"
+                  class="btn-primary mt-3 text-xs py-2 px-4">Retry Download</button>
+        </div>
+
+        <p class="font-body text-slate-300 text-xs">
+          This is a one-time setup. The AI model (~1.5 GB) will be saved
+          locally and will not be downloaded again.
+        </p>
+      </div>
+    </div>
+    <!-- ─── END Download Overlay ──────────────────────────────────────── -->
+
+  </div>
+
+  <script>
+    // ── Screen Router ────────────────────────────────────────────────────────
+    const screens = ['splash','activation','dashboard','seller','workflow'];
+
+    function showScreen(name, { fadeOut = true } = {}) {
+      screens.forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        el.classList.remove('active', 'fade-out-screen');
+        if (s === name) {
+          el.classList.add('active');
+        }
+      });
+    }
+
+    function transitionTo(name, delay = 0) {
+      setTimeout(() => {
+        showScreen(name);
+        const init = window[`init_${name}`];
+        if (typeof init === 'function') {
+          try {
+            init();
+          } catch(err) {
+            console.error('Failed to run init function for ' + name, err);
+          }
+        }
+      }, delay);
+    }
+
+    // ── HTML Fragment Loader ─────────────────────────────────────────────────
+    async function loadScreen(screenName, htmlFile) {
+      const el = document.getElementById(`screen-${screenName}`);
+      const resp = await fetch(`screens/${htmlFile}`);
+      el.innerHTML = await resp.text();
+
+      // innerHTML does NOT execute <script> tags — re-create them so they run
+      el.querySelectorAll('script').forEach(oldScript => {
+        const newScript = document.createElement('script');
+        newScript.textContent = oldScript.textContent;
+        document.body.appendChild(newScript);
+        oldScript.remove();
+      });
+
+      // Run the screen's init function if defined
+      const init = window[`init_${screenName}`];
+      if (typeof init === 'function') init();
+    }
+
+    // ── Boot Sequence ────────────────────────────────────────────────────────
+    async function boot() {
+      // Load all screens in parallel
+      await Promise.all([
+        loadScreen('splash',     'splash.html'),
+        loadScreen('activation', 'activation.html'),
+        loadScreen('dashboard',  'dashboard.html'),
+        loadScreen('seller',     'seller.html'),
+        loadScreen('workflow',   'workflow.html'),
+      ]);
+
+      showScreen('splash');
+
+      // Brief splash display, then check model before proceeding
+      setTimeout(async () => {
+        try {
+          const modelStatus = await window.pywebview.api.get_model_status();
+          if (!modelStatus.exists) {
+            // First boot: show download overlay, wait for completion
+            await _startDownloadAndWait();
+          } else {
+            // Model present: go straight to license check
+            await _proceedToLicense();
+          }
+        } catch(e) {
+          // Browser preview / no pywebview — skip model check
+          transitionTo('activation', 300);
+        }
+      }, 2800);
+    }
+
+    // Wait for pywebview to be ready, then boot
+    window.addEventListener('pywebviewready', boot);
+    // Fallback for browser-only preview
+    if (typeof window.pywebview === 'undefined') {
+      window.addEventListener('load', () => setTimeout(boot, 200));
+    }
+
+    // ─── Model Download Overlay Logic ──────────────────────────────────────
+    let _dlPollInterval = null;
+
+    function _showDownloadOverlay() {
+      document.getElementById('model-dl-overlay').classList.remove('hidden');
+    }
+
+    function _hideDownloadOverlay() {
+      const overlay = document.getElementById('model-dl-overlay');
+      overlay.style.opacity = '1';
+      overlay.style.transition = 'opacity 0.6s ease';
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.classList.add('hidden'), 650);
+    }
+
+    async function _startDownloadAndWait() {
+      _showDownloadOverlay();
+      try {
+        await window.pywebview.api.start_model_download();
+      } catch(e) {}
+      _dlPollInterval = setInterval(_pollDownload, 1500);
+    }
+
+    async function _pollDownload() {
+      try {
+        const s = await window.pywebview.api.get_download_progress();
+        const bar    = document.getElementById('dl-bar');
+        const pctEl  = document.getElementById('dl-pct');
+        const statEl = document.getElementById('dl-status');
+        const errBox = document.getElementById('dl-error-box');
+
+        bar.style.width   = s.percent + '%';
+        pctEl.textContent = s.percent + '%';
+        statEl.textContent = s.status || 'Downloading...';
+
+        if (s.error) {
+          clearInterval(_dlPollInterval);
+          errBox.classList.remove('hidden');
+          document.getElementById('dl-error-msg').textContent = s.error;
+          return;
+        }
+
+        if (s.done) {
+          clearInterval(_dlPollInterval);
+          bar.style.width = '100%';
+          pctEl.textContent = '100%';
+          statEl.textContent = 'Intelligence modules ready.';
+          document.getElementById('dl-headline').textContent =
+            'Setup complete. Launching MULA GO...';
+          setTimeout(async () => {
+            _hideDownloadOverlay();
+            await _proceedToLicense();
+          }, 1500);
+        }
+      } catch(e) {}
+    }
+
+    async function _retryDownload() {
+      document.getElementById('dl-error-box').classList.add('hidden');
+      document.getElementById('dl-bar').style.width = '0%';
+      document.getElementById('dl-pct').textContent = '0%';
+      document.getElementById('dl-status').textContent = 'Retrying...';
+      await _startDownloadAndWait();
+    }
+
+    async function _proceedToLicense() {
+      try {
+        const result = await window.pywebview.api.check_license();
+        transitionTo(result.valid ? 'dashboard' : 'activation', 300);
+      } catch(e) {
+        transitionTo('activation', 300);
+      }
+    }
+  </script>
+</body>
+</html>

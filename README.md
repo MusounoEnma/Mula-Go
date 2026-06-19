@@ -60,6 +60,12 @@ Start the desktop application using python:
 python main.py
 ```
 
+### 🤖 AI Models (Automatic Download Flow)
+Upon first launch, MULA GO will automatically manage and download the necessary AI intelligence modules (Local VLM and UI Object Detection models) from Hugging Face:
+- **First-Time Initialization**: The application checks for local AI model weights in the `models/` directory.
+- **Automatic Setup Flow**: If the weights are missing, the GUI will prompt you to initiate the download.
+- **Progress Tracking**: The download runs asynchronously in the background. A progress bar in the application interface will display the status of the Hugging Face Hub download until it is complete. No manual file management is needed.
+
 ### 🔑 Licensing & Activation (Keygen)
 MULA GO is protected by an offline hardware-locked license activation system based on the machine's unique Hardware ID (HWID) and time-sensitive TOTP codes.
 

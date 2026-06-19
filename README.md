@@ -60,6 +60,28 @@ Start the desktop application using python:
 python main.py
 ```
 
+### 🔑 Licensing & Activation (Keygen)
+MULA GO is protected by an offline hardware-locked license activation system based on the machine's unique Hardware ID (HWID) and time-sensitive TOTP codes.
+
+1. **Get Your Hardware ID (HWID)**:
+   * Run the application (`python main.py`). If the system is not yet activated, the activation screen will pop up and display your unique **Hardware ID**.
+2. **Generate the Activation Code (Admin/Provider Side)**:
+   * To activate the machine, run the built-in admin keygen script (`keygen.py`) on the administrator machine:
+     ```bash
+     # Interactive Mode (prompting for HWID input)
+     python keygen.py
+
+     # Command Line Mode (direct pass-through)
+     python keygen.py <USER_HARDWARE_ID>
+     ```
+   * *Example CLI:*
+     ```bash
+     python keygen.py CF5648A2-C4C9-604B-85F5-16A72619B969
+     ```
+   * This generates a **6-digit activation code** (valid for 30 seconds due to the TOTP time-window protection).
+3. **Activate**:
+   * Enter the generated 6-digit code into the MULA GO activation screen to permanently license the application.
+
 ---
 
 ## 🔒 Security & Privacy
